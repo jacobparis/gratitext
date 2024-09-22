@@ -19,5 +19,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		},
 	})
 
-	return json({ user })
+	return json({
+		user: {
+			...user,
+			image: user.image
+				? {
+						...user.image,
+						url: `${domain}/resources/user-images/${user.image.id}`,
+					}
+				: null,
+			notes: user.notes.map((note) => ({
+				...note,
+				images: note.images.map((image) => ({
+					...image,
+					url: `${domain}/resources/note-images/${image.id}`,
+				})),
+			})),
+		},
+	})
 }
